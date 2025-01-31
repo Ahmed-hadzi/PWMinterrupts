@@ -1,8 +1,9 @@
 // Define which pin we’re using to accept the signal
 #define ch1input 14
-#define ch2input 15
-#define ch3input 16
+#define ch2input 16
+#define ch3input 15
 #define ch4input 17
+#define ch5input 18
 
 // We have to declare as volatile as this will be modified
 // by the interrupt routine, and read outside of it
@@ -10,18 +11,22 @@ volatile uint16_t ch1;
 volatile uint16_t ch2;
 volatile uint16_t ch3;
 volatile uint16_t ch4;
+volatile uint16_t ch5;
 uint16_t ch1_start;
 uint16_t ch2_start;
 uint16_t ch3_start;
 uint16_t ch4_start;
+uint16_t ch5_start;
 
 void setup() {
+  
 Serial.begin(115200);
 
 pinMode(ch1input, INPUT);
 pinMode(ch2input, INPUT);
 pinMode(ch3input, INPUT);
 pinMode(ch4input, INPUT);
+pinMode(ch5input, INPUT);
 
 // Attach an interrupt handler to be called whenever
 // the pin changes from LOW to HIGH or vice versa
@@ -29,6 +34,7 @@ attachInterrupt(ch1input, RCchannel1, CHANGE);
 attachInterrupt(ch2input, RCchannel2, CHANGE);
 attachInterrupt(ch3input, RCchannel3, CHANGE);
 attachInterrupt(ch4input, RCchannel4, CHANGE);
+attachInterrupt(ch5input, RCchannel5, CHANGE);
 }
 
 void loop() {
@@ -40,7 +46,9 @@ Serial.print(ch2);
 Serial.print("      |      Channel 3: ");
 Serial.print(ch3);
 Serial.print("      |      Channel 4:");
-Serial.println(ch4);
+Serial.print(ch4);
+Serial.print("      |      Channel 5:");
+Serial.println(ch5);
 delay(10);
 }
 
@@ -85,5 +93,16 @@ ch4_start = micros();
 // The pin is now LOW so output the difference
 // between when the timer was started and now
 ch4 = (uint16_t) (micros() - ch4_start);
+}
+}
+
+void RCchannel5() {
+// If the pin is HIGH, start a timer
+if (digitalRead(ch5input) == HIGH) {
+ch5_start = micros();
+} else {
+// The pin is now LOW so output the difference
+// between when the timer was started and now
+ch5 = (uint16_t) (micros() - ch5_start);
 }
 }
