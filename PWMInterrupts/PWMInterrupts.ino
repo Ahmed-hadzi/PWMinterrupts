@@ -1,9 +1,9 @@
 // Define which pin we’re using to accept the signal
 #define ch1input 14
 #define ch2input 16
-#define ch3input 15
-#define ch4input 17
-#define ch5input 18
+#define ch3input 17
+#define ch4input 20
+#define ch5input 22
 
 // We have to declare as volatile as this will be modified
 // by the interrupt routine, and read outside of it
@@ -35,6 +35,18 @@ attachInterrupt(ch2input, RCchannel2, CHANGE);
 attachInterrupt(ch3input, RCchannel3, CHANGE);
 attachInterrupt(ch4input, RCchannel4, CHANGE);
 attachInterrupt(ch5input, RCchannel5, CHANGE);
+
+analogWriteFrequency(1, 250);
+analogWriteFrequency(2, 250);
+analogWriteFrequency(3, 250);
+analogWriteFrequency(4, 250);
+analogWriteResolution(12);
+
+while(ch3<2000){
+  ch3 = constrain(pulseIn(ch3input, HIGH, 30000), 1000, 2000);
+  Serial.println(ch3);
+  delay(4);
+}
 }
 
 void loop() {
@@ -49,7 +61,14 @@ Serial.print("      |      Channel 4:");
 Serial.print(ch4);
 Serial.print("      |      Channel 5:");
 Serial.println(ch5);
+
+
+analogWrite(1, constrain(ch3, 1000, 2000));
+//analogWrite(2, constrain(ch3, 1000, 2000));
+//analogWrite(3, constrain(ch3, 1000, 2000));
+//analogWrite(4, constrain(ch3, 1000, 2000));
 delay(10);
+
 }
 
 void RCchannel1() {
